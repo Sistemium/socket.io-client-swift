@@ -83,4 +83,11 @@ class SocketAckManager {
         ackSemaphore.signal()
         ack?.callback?([SocketAckStatus.noAck.rawValue])
     }
+    
+    func cancelAcks() {
+        print("cancelAcks", acks.count);
+        for ack in acks {
+            timeoutAck(ack.ack);
+        }
+    }
 }

@@ -196,6 +196,8 @@ open class SocketIOClient : NSObject, SocketIOClientSpec {
 
         status = .disconnected
 
+        ackHandlers.cancelAcks()
+
         handleClientEvent(.disconnect, data: [reason])
     }
 
@@ -206,6 +208,8 @@ open class SocketIOClient : NSObject, SocketIOClientSpec {
     @objc
     open func disconnect() {
         DefaultSocketLogger.Logger.log("Closing socket", type: logType)
+
+        ackHandlers.cancelAcks()
 
         leaveNamespace()
     }
@@ -500,7 +504,9 @@ open class SocketIOClient : NSObject, SocketIOClientSpec {
     /// Tries to reconnect to the server.
     @objc
     @available(*, unavailable, message: "Call the manager's reconnect method")
-    open func reconnect() { }
+    open func reconnect() {
+        ackHandlers.cancelAcks()
+    }
 
     /// Removes all handlers.
     ///
@@ -517,6 +523,8 @@ open class SocketIOClient : NSObject, SocketIOClientSpec {
     @objc
     open func setReconnecting(reason: String) {
         status = .connecting
+        
+        ackHandlers.cancelAcks()
 
         handleClientEvent(.reconnect, data: [reason])
     }
